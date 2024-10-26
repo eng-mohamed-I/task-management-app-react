@@ -23,6 +23,10 @@
   transform: scale(1.02);
 }
 
+.modal {
+  animation: showModel 0.4s ease;
+}
+
 @media (max-width: 980px) {
   .main {
     background-image: url(../../../public/pexels-startup-stock-photos-7376.jpg);
@@ -30,5 +34,14 @@
   }
   .backGroundImg {
     display: none;
+  }
+}
+
+@keyframes showModel {
+  0% {
+    opacity: 0%;
+  }
+  100% {
+    opacity: 100%;
   }
 }

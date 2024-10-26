@@ -6,7 +6,7 @@ import { addTask } from "../../Redux/taskSlice";
 import { taskSchema } from "../../Validators/validationSchema";
 import { useEffect, useState } from "react";
 
-const TaskForm = ({ formVisibilty }) => {
+const TaskForm = ({ formVisibility }) => {
   const [addFormVisibilty, setAddFormVisibilty] = useState(false);
   const dispatch = useDispatch();
   const {
@@ -26,9 +26,9 @@ const TaskForm = ({ formVisibilty }) => {
   };
 
   useEffect(() => {
+    setAddFormVisibilty(formVisibility);
     reset();
-    setAddFormVisibilty(formVisibilty);
-  }, [formVisibilty, reset]);
+  }, [formVisibility, reset]);
 
   return (
     <>
@@ -36,7 +36,7 @@ const TaskForm = ({ formVisibilty }) => {
         <div className={`${style.addform} container`}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="card p-4 shadow-lg bg-light d-flex flex-column gap-2 col-6"
+            className="card p-4 shadow-lg bg-light d-flex flex-column gap-2"
           >
             <div className="d-flex flex-column">
               <input

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteTask, editTask } from "../../Redux/taskSlice";
+import { deleteTask, editState, editTask } from "../../Redux/taskSlice";
 import TaskForm from "../task-form/task-form";
 import style from "./task-list.module.css";
 
@@ -10,16 +10,16 @@ const KanbanBoard = () => {
   const [addFormVisibility, setAddFormVisibility] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("All");
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const handleStateChange = (taskId, newState) => {
-    dispatch(editTask({ id: taskId, updatedState: newState }));
+    dispatch(editState({ id: taskId, updatedState: newState }));
   };
 
   const toggleFormVisibility = () => {
     setAddFormVisibility(!addFormVisibility);
   };
 
-  // Filter tasks based on search query and priority
   const filteredTasks = tasks.filter((task) => {
     const matchesSearchQuery = task.title
       .toLowerCase()
@@ -48,7 +48,7 @@ const KanbanBoard = () => {
         className={`${style.backGroundImg} w-100 position-fixed top-0 start-0`}
       />
       <div className="container">
-        <div className="position-relative p-3">
+        <div className=" p-3">
           <button
             onClick={toggleFormVisibility}
             className="btn-success btn position-relative"
@@ -57,9 +57,9 @@ const KanbanBoard = () => {
           </button>
 
           <div
-            className={`position-absolute col-lg-12 col-md-8 col-sm-10 ${style.addtask}`}
+            className={`d-block position-absolute col-lg-6 col-md-8 col-sm-12 ${style.addtask}`}
           >
-            <TaskForm formVisibilty={addFormVisibility} />
+            <TaskForm formVisibility={addFormVisibility} />
           </div>
         </div>
 
@@ -102,19 +102,31 @@ const KanbanBoard = () => {
                 {filteredTasks
                   .filter((task) => task.state === column.id)
                   .map((task) => (
-                    <div className="card mb-3" key={task.id}>
-                      <div className="card-body">
+                    <div className="card mb-3 shadow-sm" key={task.id}>
+                      <div className="card-body position-relative">
                         <h5 className="card-title">{task.title}</h5>
                         <p className="card-text">{task.description}</p>
                         <p className="card-text">
                           <small>Priority: {task.priority}</small>
                         </p>
-                        <div className="d-flex justify-content-between">
+                        <div className="d-flex justify-content-between gap-2">
                           <button
                             className="btn btn-outline-danger btn-sm"
                             onClick={() => dispatch(deleteTask(task.id))}
                           >
                             Delete
+                          </button>
+                          <button
+                            className="btn btn-outline-info btn-sm"
+                            onClick={() => setSelectedTask(task)}
+                          >
+                            Show
+                          </button>
+                          <button
+                            className="btn btn-outline-warning btn-sm"
+                            onClick={() => dispatch(editTask(task.id, task))}
+                          >
+                            update
                           </button>
                           <select
                             className="form-select form-select-sm"
@@ -135,6 +147,49 @@ const KanbanBoard = () => {
             </div>
           ))}
         </div>
+
+        {/* Task Details */}
+        {selectedTask && (
+          <div
+            className={`modal fade show shadow-lg ${style.modal}`}
+            style={{ display: "block" }}
+            onClick={() => setSelectedTask(null)}
+          >
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">{selectedTask.title}</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    aria-label="Close"
+                    onClick={() => setSelectedTask(null)}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <p>
+                    <strong>Description:</strong> {selectedTask.description}
+                  </p>
+                  <p>
+                    <strong>Priority:</strong> {selectedTask.priority}
+                  </p>
+                  <p>
+                    <strong>State:</strong> {selectedTask.state}
+                  </p>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setSelectedTask(null)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
