@@ -8,7 +8,8 @@ const KanbanBoard = () => {
   const tasks = useSelector((state) => state.tasks.tasks);
   const dispatch = useDispatch();
   const handleStateChange = (taskId, newState) => {
-    dispatch(editTask({ id: taskId, state: newState }));
+    dispatch(editTask({ id: taskId, updatedState: newState }));
+    console.log(newState);
   };
   const [addFormVisibilty, setAddFormVisibilty] = useState(false);
   const showHiddenForm = () => {
@@ -30,31 +31,41 @@ const KanbanBoard = () => {
     <div className={`${style.main} container-fulid`}>
       <img
         src="pexels-startup-stock-photos-7376.jpg"
-        alt=""
-        className="w-100 position-fixed top-0 start-0"
+        alt="image/background"
+        className={` ${style.backGroundImg} w-100 position-fixed top-0 start-0`}
       />
-      <div className={` container`}>
-        <div className="position-relative">
-          <button
-            onClick={() => showHiddenForm()}
-            className="btn-success btn m-3 position-relative"
-          >
-            new task
-          </button>
-          {addFormVisibilty && (
-            <div
-              className={`position-absolute col-lg-12 col-md-8 col-sm-8 ${style.addtask}`}
+      <div className={` container `}>
+        <div className="position-relative  p-3">
+          {addFormVisibilty ? (
+            <button
+              onClick={() => showHiddenForm()}
+              className="btn btn-danger fw-bold "
             >
-              <TaskForm />
-            </div>
+              X
+            </button>
+          ) : (
+            <button
+              onClick={() => showHiddenForm()}
+              className="btn-success btn position-relative "
+            >
+              new task
+            </button>
           )}
+
+          <div
+            className={`position-absolute  col-lg-12 col-md-8 col-sm-10 ${style.addtask}`}
+          >
+            <TaskForm formVisibilty={addFormVisibilty} />
+          </div>
         </div>
 
         <div className="row position-relative mt-4">
           {columns.map((column) => (
             <div className="col-md-4 mb-4" key={column.id}>
               <div
-                className={`p-3 ${column.color} rounded ${style.column} shadow-lg`}
+                className={`p-3 ${column.color} rounded ${style.column} ${
+                  style.cCard
+                }  shadow-lg`}
               >
                 <h2 className={`text-center ${column.textColor}`}>
                   {column.title}

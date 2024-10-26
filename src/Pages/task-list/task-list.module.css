@@ -1,7 +1,11 @@
 .addtask {
   z-index: 10000;
   opacity: 90%;
-  animation: formAnimation 0.2s ease;
+}
+
+.cCard {
+  height: 80vh;
+  overflow-y: scroll;
 }
 
 .column {
@@ -19,11 +23,12 @@
   transform: scale(1.02);
 }
 
-@keyframes formAnimation {
-  0% {
-    opacity: 0%;
+@media (max-width: 980px) {
+  .main {
+    background-image: url(../../../public/pexels-startup-stock-photos-7376.jpg);
+    background-size: cover;
   }
-  100% {
-    opacity: 100%;
+  .backGroundImg {
+    display: none;
   }
 }
