@@ -2,13 +2,13 @@ import style from "./task-form.module.css";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
-import { addTask } from "../../Redux/taskSlice";
+import { addTask, editTask } from "../../Redux/taskSlice";
 import { taskSchema } from "../../Validators/validationSchema";
 import { useEffect, useState } from "react";
 
-const TaskForm = ({ formVisibility }) => {
-  const [addFormVisibilty, setAddFormVisibilty] = useState(false);
+const TaskForm = ({ formVisibility, existingTask }) => {
   const dispatch = useDispatch();
+  const [addFormVisibility, setAddFormVisibility] = useState(false);
   const {
     register,
     handleSubmit,
@@ -16,28 +16,60 @@ const TaskForm = ({ formVisibility }) => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(taskSchema),
+    defaultValues: existingTask
+      ? {
+          title: existingTask.title,
+          description: existingTask.description,
+          priority: existingTask.priority,
+          state: existingTask.state,
+        }
+      : {},
   });
 
   const onSubmit = (data) => {
-    const newTask = { id: Date.now(), ...data };
-    dispatch(addTask(newTask));
-    setAddFormVisibilty(false);
+    if (existingTask) {
+      // Update task
+      const updatedTask = { ...existingTask, ...data };
+      dispatch(editTask({ id: existingTask.id, updatedTask }));
+    } else {
+      // Add new task
+      const newTask = { id: Date.now(), ...data };
+      dispatch(addTask(newTask));
+    }
+    setAddFormVisibility(false);
     reset();
   };
 
   useEffect(() => {
-    setAddFormVisibilty(formVisibility);
-    reset();
-  }, [formVisibility, reset]);
+    setAddFormVisibility(formVisibility);
+    if (formVisibility) {
+      reset(
+        existingTask
+          ? {
+              title: existingTask.title,
+              description: existingTask.description,
+              priority: existingTask.priority,
+              state: existingTask.state,
+            }
+          : {}
+      );
+    }
+  }, [formVisibility, existingTask, reset]);
 
   return (
     <>
-      {addFormVisibilty && (
+      {addFormVisibility && (
         <div className={`${style.addform} container`}>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="card p-4 shadow-lg bg-light d-flex flex-column gap-2"
           >
+            <div
+              onClick={() => setAddFormVisibility(false)}
+              className="btn btn-danger btn-sm"
+            >
+              X
+            </div>
             <div className="d-flex flex-column">
               <input
                 className="form-control"
@@ -100,7 +132,7 @@ const TaskForm = ({ formVisibility }) => {
 
             <div>
               <button className="btn btn-sm btn-success" type="submit">
-                Add Task
+                {existingTask ? "Update Task" : "Add Task"}
               </button>
             </div>
           </form>

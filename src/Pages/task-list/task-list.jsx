@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteTask, editState, editTask } from "../../Redux/taskSlice";
+import { deleteTask, editState } from "../../Redux/taskSlice";
 import TaskForm from "../task-form/task-form";
 import style from "./task-list.module.css";
 
@@ -11,6 +11,7 @@ const KanbanBoard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [selectedTask, setSelectedTask] = useState(null);
+  const [taskDetails, setTaskDetails] = useState(null);
 
   const handleStateChange = (taskId, newState) => {
     dispatch(editState({ id: taskId, updatedState: newState }));
@@ -59,7 +60,10 @@ const KanbanBoard = () => {
           <div
             className={`d-block position-absolute col-lg-6 col-md-8 col-sm-12 ${style.addtask}`}
           >
-            <TaskForm formVisibility={addFormVisibility} />
+            <TaskForm
+              existingTask={selectedTask}
+              formVisibility={addFormVisibility}
+            />
           </div>
         </div>
 
@@ -118,13 +122,16 @@ const KanbanBoard = () => {
                           </button>
                           <button
                             className="btn btn-outline-info btn-sm"
-                            onClick={() => setSelectedTask(task)}
+                            onClick={() => setTaskDetails(task)}
                           >
                             Show
                           </button>
                           <button
                             className="btn btn-outline-warning btn-sm"
-                            onClick={() => dispatch(editTask(task.id, task))}
+                            onClick={() => {
+                              setSelectedTask(task);
+                              setAddFormVisibility(true);
+                            }}
                           >
                             update
                           </button>
@@ -149,39 +156,39 @@ const KanbanBoard = () => {
         </div>
 
         {/* Task Details */}
-        {selectedTask && (
+        {taskDetails && (
           <div
             className={`modal fade show shadow-lg ${style.modal}`}
             style={{ display: "block" }}
-            onClick={() => setSelectedTask(null)}
+            onClick={() => setTaskDetails(null)}
           >
-            <div className="modal-dialog">
+            <div className={` modal-dialog`}>
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">{selectedTask.title}</h5>
+                  <h5 className="modal-title">{taskDetails.title}</h5>
                   <button
                     type="button"
                     className="btn-close"
                     aria-label="Close"
-                    onClick={() => setSelectedTask(null)}
+                    onClick={() => setTaskDetails(null)}
                   ></button>
                 </div>
                 <div className="modal-body">
-                  <p>
-                    <strong>Description:</strong> {selectedTask.description}
+                  <p title={taskDetails.description}>
+                    <strong>Description:</strong> {taskDetails.description}
                   </p>
                   <p>
-                    <strong>Priority:</strong> {selectedTask.priority}
+                    <strong>Priority:</strong> {taskDetails.priority}
                   </p>
                   <p>
-                    <strong>State:</strong> {selectedTask.state}
+                    <strong>State:</strong> {taskDetails.state}
                   </p>
                 </div>
                 <div className="modal-footer">
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    onClick={() => setSelectedTask(null)}
+                    onClick={() => setTaskDetails(null)}
                   >
                     Close
                   </button>
