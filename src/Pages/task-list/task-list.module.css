@@ -1,0 +1,29 @@
+.addtask {
+  z-index: 10000;
+  opacity: 90%;
+  animation: formAnimation 0.2s ease;
+}
+
+.column {
+  min-height: 60vh;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+
+.card-body {
+  border: 1px solid #4caf50;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card-body:hover {
+  transform: scale(1.02);
+}
+
+@keyframes formAnimation {
+  0% {
+    opacity: 0%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
