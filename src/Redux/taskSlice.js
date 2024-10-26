@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   tasks: [],
@@ -12,11 +12,20 @@ const taskSlice = createSlice({
     addTask: (state, action) => {
       state.tasks.push(action.payload);
     },
-    editTask: (state, action) => {
+    editState: (state, action) => {
       const { id, updatedState } = action.payload;
       const index = state.tasks.findIndex((task) => task.id === id);
       if (index !== -1) {
+        console.log(state.tasks[index].state);
+
         state.tasks[index].state = updatedState;
+      }
+    },
+    editTask: (state, action) => {
+      const { id, updatedTask } = action.payload;
+      const index = state.tasks.findIndex((task) => task.id === id);
+      if (index !== -1) {
+        state.tasks[index] = updatedTask;
       }
     },
     deleteTask: (state, action) => {
@@ -25,5 +34,5 @@ const taskSlice = createSlice({
   },
 });
 
-export const { addTask, editTask, deleteTask } = taskSlice.actions;
+export const { addTask, editTask, deleteTask, editState } = taskSlice.actions;
 export default taskSlice.reducer;
