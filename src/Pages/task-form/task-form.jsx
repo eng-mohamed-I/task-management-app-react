@@ -8,15 +8,11 @@ import { useEffect, useState } from "react";
 
 const TaskForm = ({ formVisibilty }) => {
   const [addFormVisibilty, setAddFormVisibilty] = useState(false);
-
-  useEffect(() => {
-    setAddFormVisibilty(formVisibilty);
-  }, [formVisibilty]);
-
   const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(taskSchema),
@@ -26,7 +22,13 @@ const TaskForm = ({ formVisibilty }) => {
     const newTask = { id: Date.now(), ...data };
     dispatch(addTask(newTask));
     setAddFormVisibilty(false);
+    reset();
   };
+
+  useEffect(() => {
+    reset();
+    setAddFormVisibilty(formVisibilty);
+  }, [formVisibilty, reset]);
 
   return (
     <>

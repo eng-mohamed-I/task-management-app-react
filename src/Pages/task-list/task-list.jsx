@@ -7,14 +7,27 @@ import style from "./task-list.module.css";
 const KanbanBoard = () => {
   const tasks = useSelector((state) => state.tasks.tasks);
   const dispatch = useDispatch();
+  const [addFormVisibility, setAddFormVisibility] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState("All");
+
   const handleStateChange = (taskId, newState) => {
     dispatch(editTask({ id: taskId, updatedState: newState }));
-    console.log(newState);
   };
-  const [addFormVisibilty, setAddFormVisibilty] = useState(false);
-  const showHiddenForm = () => {
-    addFormVisibilty ? setAddFormVisibilty(false) : setAddFormVisibilty(true);
+
+  const toggleFormVisibility = () => {
+    setAddFormVisibility(!addFormVisibility);
   };
+
+  // Filter tasks based on search query and priority
+  const filteredTasks = tasks.filter((task) => {
+    const matchesSearchQuery = task.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesPriority =
+      priorityFilter === "All" || task.priority === priorityFilter;
+    return matchesSearchQuery && matchesPriority;
+  });
 
   const columns = [
     { id: "todo", title: "To Do", color: "bg-light", textColor: "text-dark" },
@@ -28,34 +41,52 @@ const KanbanBoard = () => {
   ];
 
   return (
-    <div className={`${style.main} container-fulid`}>
+    <div className={`${style.main} container-fluid`}>
       <img
         src="pexels-startup-stock-photos-7376.jpg"
-        alt="image/background"
-        className={` ${style.backGroundImg} w-100 position-fixed top-0 start-0`}
+        alt="background"
+        className={`${style.backGroundImg} w-100 position-fixed top-0 start-0`}
       />
-      <div className={` container `}>
-        <div className="position-relative  p-3">
-          {addFormVisibilty ? (
-            <button
-              onClick={() => showHiddenForm()}
-              className="btn btn-danger fw-bold "
-            >
-              X
-            </button>
-          ) : (
-            <button
-              onClick={() => showHiddenForm()}
-              className="btn-success btn position-relative "
-            >
-              new task
-            </button>
-          )}
+      <div className="container">
+        <div className="position-relative p-3">
+          <button
+            onClick={toggleFormVisibility}
+            className="btn-success btn position-relative"
+          >
+            New Task
+          </button>
 
           <div
-            className={`position-absolute  col-lg-12 col-md-8 col-sm-10 ${style.addtask}`}
+            className={`position-absolute col-lg-12 col-md-8 col-sm-10 ${style.addtask}`}
           >
-            <TaskForm formVisibilty={addFormVisibilty} />
+            <TaskForm formVisibilty={addFormVisibility} />
+          </div>
+        </div>
+
+        <div className="container">
+          <div className="position-relative p-3 ">
+            <div className="col-6">
+              <input
+                type="text"
+                placeholder="Search by task name..."
+                className="form-control mb-2 col-6"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            <div className="col-6">
+              <select
+                className="form-select col-6"
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+              >
+                <option value="All">All Priorities</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -63,14 +94,12 @@ const KanbanBoard = () => {
           {columns.map((column) => (
             <div className="col-md-4 mb-4" key={column.id}>
               <div
-                className={`p-3 ${column.color} rounded ${style.column} ${
-                  style.cCard
-                }  shadow-lg`}
+                className={`p-3 ${column.color} rounded ${style.column} ${style.cCard} shadow-lg`}
               >
                 <h2 className={`text-center ${column.textColor}`}>
                   {column.title}
                 </h2>
-                {tasks
+                {filteredTasks
                   .filter((task) => task.state === column.id)
                   .map((task) => (
                     <div className="card mb-3" key={task.id}>
