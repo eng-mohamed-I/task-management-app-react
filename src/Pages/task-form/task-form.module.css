@@ -1,0 +1,14 @@
+.addform {
+  animation: formAnimation 0.5s ease;
+}
+
+@keyframes formAnimation {
+  0% {
+    opacity: 0%;
+    width: 0%;
+  }
+  100% {
+    opacity: 90%;
+    width: 100%;
+  }
+}
