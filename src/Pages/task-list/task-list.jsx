@@ -6,6 +6,7 @@ import style from "./task-list.module.css";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
+import { FaPlus } from "react-icons/fa";
 
 const KanbanBoard = () => {
   const tasks = useSelector((state) => state.tasks.tasks);
@@ -83,16 +84,6 @@ const KanbanBoard = () => {
       />
       <div className="container">
         <div className=" p-3">
-          <button
-            onClick={() => {
-              setSelectedTask(null);
-              toggleFormVisibility();
-            }}
-            className="btn-success btn position-relative"
-          >
-            New Task
-          </button>
-
           <div
             className={`d-block position-absolute col-lg-6 col-md-12 col-sm-12 ${style.addtask}`}
           >
@@ -130,62 +121,91 @@ const KanbanBoard = () => {
           </div>
         </div>
 
-        <div className="row position-relative mt-4">
+        <div className="row position-relative mt-2">
           {columns.map((column) => (
-            <div className="col-md-4 mb-4" key={column.id}>
+            <div className="col-md-4" key={column.id}>
               <div
-                className={`p-3 ${column.color} rounded ${style.column} ${style.cCard} shadow-lg`}
+                className={`rounded ${style.column} mb-2 bg-black shadow-lg`}
               >
-                <h2 className={`text-center ${column.textColor}`}>
+                <h6
+                  className={` w-100 px-4 py-2 text-light fw-bold `}
+                  role="button"
+                >
                   {column.title}
-                </h2>
-                {filteredTasks
-                  .filter((task) => task.state === column.id)
-                  .map((task) => (
-                    <div className="card mb-3 shadow-sm" key={task.id}>
-                      <div className="card-body position-relative">
-                        <h5 className="card-title">{task.title}</h5>
-                        <p className="card-text">{task.description}</p>
-                        <p className="card-text">
-                          <small>Priority: {task.priority}</small>
-                        </p>
-                        <div className="d-flex justify-content-between gap-2">
-                          <button
-                            className="btn btn-outline-danger btn-sm"
-                            onClick={() => confirmDeleteTask(task.id)}
-                          >
-                            Delete
-                          </button>
-                          <button
-                            className="btn btn-outline-info btn-sm"
-                            onClick={() => setTaskDetails(task)}
-                          >
-                            Show
-                          </button>
-                          <button
-                            className="btn btn-outline-warning btn-sm"
-                            onClick={() => {
-                              setSelectedTask(task);
-                              setAddFormVisibility(true);
-                            }}
-                          >
-                            update
-                          </button>
-                          <select
-                            className="form-select form-select-sm"
-                            value={task.state}
-                            onChange={(e) =>
-                              handleStateChange(task.id, e.target.value)
-                            }
-                          >
-                            <option value="todo">To Do</option>
-                            <option value="doing">In Progress</option>
-                            <option value="done">Done</option>
-                          </select>
+                </h6>
+                <div className={`${style.cCard}`}>
+                  {filteredTasks
+                    .filter((task) => task.state === column.id)
+                    .map((task) => (
+                      <div
+                        role="button"
+                        className={`${style.tCard} card m-2 bg-dark text-secondary shadow-sm `}
+                        key={task.id}
+                      >
+                        <div className="card-body position-relative">
+                          <h5 className="card-title">{task.title}</h5>
+                          <p className="card-text">{task.description}</p>
+                          <p className="card-text">
+                            <small>Priority: {task.priority}</small>
+                          </p>
+                          <div className="d-flex justify-content-between gap-2">
+                            <button
+                              title="details"
+                              className="btn btn-outline-info btn-sm"
+                              onClick={() => setTaskDetails(task)}
+                            >
+                              <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button
+                              title="edit"
+                              className="btn btn-outline-warning btn-sm"
+                              onClick={() => {
+                                setSelectedTask(task);
+                                setAddFormVisibility(true);
+                              }}
+                            >
+                              <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button
+                              title="delete"
+                              className="btn btn-outline-danger btn-sm"
+                              onClick={() => confirmDeleteTask(task.id)}
+                            >
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                            <select
+                              role="button"
+                              className={`form-select form-select-sm bg-dark text-secondary ${
+                                task.state === "todo"
+                                  ? "border "
+                                  : task.state === "doing"
+                                  ? "border-warning "
+                                  : "border-success "
+                              }`}
+                              value={task.state}
+                              onChange={(e) =>
+                                handleStateChange(task.id, e.target.value)
+                              }
+                            >
+                              <option value="todo">To Do</option>
+                              <option value="doing">In Progress</option>
+                              <option value="done">Done</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
+                <button
+                  onClick={() => {
+                    setSelectedTask(null);
+                    toggleFormVisibility();
+                  }}
+                  className={`${style.addTask} btn btn-dark rounded w-100 text-light position-relative`}
+                >
+                  <i class="fa-solid fa-plus"></i>
+                  &nbsp; Add a task
+                </button>
               </div>
             </div>
           ))}

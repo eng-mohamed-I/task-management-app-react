@@ -65,7 +65,7 @@ const TaskForm = ({ formVisibility, existingTask }) => {
         <div className={`${style.addform} container`}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="card p-4 shadow-lg bg-light d-flex flex-column gap-2"
+            className="card p-4 bg-dark shadow-lg bg-light d-flex flex-column gap-2"
           >
             <div
               onClick={() => {

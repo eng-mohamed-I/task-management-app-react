@@ -7,14 +7,20 @@
 }
 
 .cCard {
-  height: 80vh;
-  overflow-y: scroll;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.tCard {
+  transition: all 0.3s ease;
+}
+
+.tCard:hover {
+  border: 1px solid gray;
 }
 
 .column {
-  min-height: 60vh;
   border-radius: 5px;
-  overflow-y: auto;
 }
 
 .card-body {
