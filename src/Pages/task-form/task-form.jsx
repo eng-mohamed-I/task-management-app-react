@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 const TaskForm = ({ formVisibility, existingTask }) => {
   const dispatch = useDispatch();
   const [addFormVisibility, setAddFormVisibility] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -42,7 +43,6 @@ const TaskForm = ({ formVisibility, existingTask }) => {
 
   useEffect(() => {
     setAddFormVisibility(formVisibility);
-    console.log(existingTask);
     if (formVisibility) {
       reset(
         existingTask
@@ -59,6 +59,8 @@ const TaskForm = ({ formVisibility, existingTask }) => {
 
   return (
     <>
+      {/* success messages */}
+
       {addFormVisibility && (
         <div className={`${style.addform} container`}>
           <form
