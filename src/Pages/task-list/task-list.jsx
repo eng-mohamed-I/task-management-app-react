@@ -5,6 +5,7 @@ import TaskForm from "../task-form/task-form";
 import style from "./task-list.module.css";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Dialog } from "primereact/dialog";
 
 const KanbanBoard = () => {
   const tasks = useSelector((state) => state.tasks.tasks);
@@ -93,7 +94,7 @@ const KanbanBoard = () => {
           </button>
 
           <div
-            className={`d-block position-absolute col-lg-6 col-md-8 col-sm-12 ${style.addtask}`}
+            className={`d-block position-absolute col-lg-6 col-md-12 col-sm-12 ${style.addtask}`}
           >
             <TaskForm
               existingTask={selectedTask}
@@ -190,48 +191,28 @@ const KanbanBoard = () => {
           ))}
         </div>
 
-        {/* Task Details */}
-        {taskDetails && (
-          <div
-            className={`modal fade show shadow-lg ${style.modal}`}
-            style={{ display: "block" }}
-            onClick={() => setTaskDetails(null)}
-          >
-            <div className={` modal-dialog`}>
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">{taskDetails.title}</h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    aria-label="Close"
-                    onClick={() => setTaskDetails(null)}
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  <p title={taskDetails.description}>
-                    <strong>Description:</strong> {taskDetails.description}
-                  </p>
-                  <p>
-                    <strong>Priority:</strong> {taskDetails.priority}
-                  </p>
-                  <p>
-                    <strong>State:</strong> {taskDetails.state}
-                  </p>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setTaskDetails(null)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* task details model */}
+        <Dialog
+          header={taskDetails?.title || "Task Details"}
+          visible={!!taskDetails}
+          style={{ width: "50vw" }}
+          onHide={() => setTaskDetails(null)}
+        >
+          {taskDetails && (
+            <>
+              <h5 className="modal-title">{taskDetails.title}</h5>
+              <p>
+                <strong>Description:</strong> {taskDetails.description}
+              </p>
+              <p>
+                <strong>Priority:</strong> {taskDetails.priority}
+              </p>
+              <p>
+                <strong>State:</strong> {taskDetails.state}
+              </p>
+            </>
+          )}
+        </Dialog>
       </div>
     </div>
   );
