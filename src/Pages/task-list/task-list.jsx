@@ -42,8 +42,7 @@ const KanbanBoard = () => {
   ];
 
   return (
-    <div className={`${style.main} container-fluid`}>
-      <img
+    <div className={`${style.main} container-fluid`}>      <img
         src="pexels-startup-stock-photos-7376.jpg"
         alt="background"
         className={`${style.backGroundImg} w-100 position-fixed top-0 start-0`}

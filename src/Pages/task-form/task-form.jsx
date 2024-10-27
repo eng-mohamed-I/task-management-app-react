@@ -4,11 +4,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
 import { addTask, editTask } from "../../Redux/taskSlice";
 import { taskSchema } from "../../Validators/validationSchema";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Toast } from "primereact/toast";
 
 const TaskForm = ({ formVisibility, existingTask }) => {
   const dispatch = useDispatch();
   const [addFormVisibility, setAddFormVisibility] = useState(false);
+  const toast = useRef(null);
+
   const {
     register,
     handleSubmit,
@@ -31,10 +34,22 @@ const TaskForm = ({ formVisibility, existingTask }) => {
       // Update task
       const updatedTask = { ...existingTask, ...data };
       dispatch(editTask({ id: existingTask.id, updatedTask }));
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Task updated successfully",
+        life: 2000,
+      });
     } else {
       // Add new task
       const newTask = { id: Date.now(), ...data };
       dispatch(addTask(newTask));
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Task added successfully",
+        life: 2000,
+      });
     }
     setAddFormVisibility(false);
     reset({});
@@ -42,7 +57,6 @@ const TaskForm = ({ formVisibility, existingTask }) => {
 
   useEffect(() => {
     setAddFormVisibility(formVisibility);
-    console.log(existingTask);
     if (formVisibility) {
       reset(
         existingTask
@@ -59,6 +73,10 @@ const TaskForm = ({ formVisibility, existingTask }) => {
 
   return (
     <>
+      {/* success messages */}
+
+      <Toast ref={toast} />
+
       {addFormVisibility && (
         <div className={`${style.addform} container`}>
           <form
