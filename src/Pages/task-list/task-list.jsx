@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteTask, editState } from "../../Redux/taskSlice";
 import TaskForm from "../task-form/task-form";
 import style from "./task-list.module.css";
+import { Toast } from "primereact/toast";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 const KanbanBoard = () => {
   const tasks = useSelector((state) => state.tasks.tasks);
@@ -12,6 +14,7 @@ const KanbanBoard = () => {
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskDetails, setTaskDetails] = useState(null);
+  const toast = useRef(null);
 
   const handleStateChange = (taskId, newState) => {
     dispatch(editState({ id: taskId, updatedState: newState }));
@@ -19,6 +22,34 @@ const KanbanBoard = () => {
 
   const toggleFormVisibility = () => {
     setAddFormVisibility(!addFormVisibility);
+  };
+
+  const confirmDeleteTask = (id) => {
+    confirmDialog({
+      message: "Are you sure you want to delete this task?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      acceptClassName: "p-button-danger",
+      accept: () => handleDeleteTask(id),
+      reject: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Cancelled",
+          detail: "Task deletion cancelled",
+          life: 2000,
+        });
+      },
+    });
+  };
+
+  const handleDeleteTask = (id) => {
+    dispatch(deleteTask(id));
+    toast.current.show({
+      severity: "success",
+      summary: "Success",
+      detail: "Task deleted successfully",
+      life: 2000,
+    });
   };
 
   const filteredTasks = tasks.filter((task) => {
@@ -42,7 +73,9 @@ const KanbanBoard = () => {
   ];
 
   return (
-    <div className={`${style.main} container-fluid`}>      <img
+    <div className={`${style.main} container-fluid`}>
+      <Toast ref={toast} /> <ConfirmDialog />
+      <img
         src="pexels-startup-stock-photos-7376.jpg"
         alt="background"
         className={`${style.backGroundImg} w-100 position-fixed top-0 start-0`}
@@ -118,7 +151,7 @@ const KanbanBoard = () => {
                         <div className="d-flex justify-content-between gap-2">
                           <button
                             className="btn btn-outline-danger btn-sm"
-                            onClick={() => dispatch(deleteTask(task.id))}
+                            onClick={() => confirmDeleteTask(task.id)}
                           >
                             Delete
                           </button>
