@@ -51,7 +51,10 @@ const KanbanBoard = () => {
       <div className="container">
         <div className=" p-3">
           <button
-            onClick={toggleFormVisibility}
+            onClick={() => {
+              setSelectedTask(null);
+              toggleFormVisibility();
+            }}
             className="btn-success btn position-relative"
           >
             New Task
