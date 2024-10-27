@@ -42,6 +42,7 @@ const TaskForm = ({ formVisibility, existingTask }) => {
 
   useEffect(() => {
     setAddFormVisibility(formVisibility);
+    console.log(existingTask);
     if (formVisibility) {
       reset(
         existingTask
