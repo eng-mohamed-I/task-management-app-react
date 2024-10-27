@@ -37,7 +37,7 @@ const TaskForm = ({ formVisibility, existingTask }) => {
       dispatch(addTask(newTask));
     }
     setAddFormVisibility(false);
-    reset();
+    reset({});
   };
 
   useEffect(() => {
@@ -66,7 +66,10 @@ const TaskForm = ({ formVisibility, existingTask }) => {
             className="card p-4 shadow-lg bg-light d-flex flex-column gap-2"
           >
             <div
-              onClick={() => setAddFormVisibility(false)}
+              onClick={() => {
+                reset({});
+                setAddFormVisibility(false);
+              }}
               className="btn btn-danger btn-sm"
             >
               X
