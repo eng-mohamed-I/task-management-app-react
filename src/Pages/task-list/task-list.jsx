@@ -6,7 +6,6 @@ import style from "./task-list.module.css";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
-import { FaPlus } from "react-icons/fa";
 
 const KanbanBoard = () => {
   const tasks = useSelector((state) => state.tasks.tasks);
@@ -16,14 +15,11 @@ const KanbanBoard = () => {
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskDetails, setTaskDetails] = useState(null);
+  const [toggleButton, setToggleButton] = useState(false);
   const toast = useRef(null);
 
   const handleStateChange = (taskId, newState) => {
     dispatch(editState({ id: taskId, updatedState: newState }));
-  };
-
-  const toggleFormVisibility = () => {
-    setAddFormVisibility(!addFormVisibility);
   };
 
   const confirmDeleteTask = (id) => {
@@ -64,14 +60,12 @@ const KanbanBoard = () => {
   });
 
   const columns = [
-    { id: "todo", title: "To Do", color: "bg-light", textColor: "text-dark" },
+    { id: "todo", title: "To Do" },
     {
       id: "doing",
-      title: "In Progress",
-      color: "bg-warning",
-      textColor: "text-dark",
+      title: "Doing",
     },
-    { id: "done", title: "Done", color: "bg-success", textColor: "text-white" },
+    { id: "done", title: "Done" },
   ];
 
   return (
@@ -88,42 +82,53 @@ const KanbanBoard = () => {
             className={`d-block position-absolute col-lg-6 col-md-12 col-sm-12 ${style.addtask}`}
           >
             <TaskForm
+              toggleButton={toggleButton}
               existingTask={selectedTask}
               formVisibility={addFormVisibility}
             />
           </div>
         </div>
 
-        <div className="container">
-          <div className="position-relative p-3 ">
-            <div className="col-6">
-              <input
-                type="text"
-                placeholder="Search by task name..."
-                className="form-control mb-2 col-6"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+        <div
+          className={`${style.navBar} container-fulid position-fixed w-100 start-0 top-0`}
+        >
+          <div className=" w-100 p-3 d-flex justify-content-between gap-2 ">
+            <h1 className="fs-3 fw-bold">Task Management</h1>
+
+            <div className="col-4 d-flex gap-1">
+              <div className="col-6">
+                <input
+                  type="text"
+                  placeholder="Search by task name..."
+                  className="form-control mb-2 col-6 bg-black text-secondary"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              <div className="col-6">
+                <select
+                  className="form-select col-6 bg-black text-secondary"
+                  value={priorityFilter}
+                  onChange={(e) => setPriorityFilter(e.target.value)}
+                >
+                  <option value="All">All Priorities</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
             </div>
 
-            <div className="col-6">
-              <select
-                className="form-select col-6"
-                value={priorityFilter}
-                onChange={(e) => setPriorityFilter(e.target.value)}
-              >
-                <option value="All">All Priorities</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-              </select>
+            <div className=" ">
+              <p className="fw-bold">Hello, Mohamed</p>
             </div>
           </div>
         </div>
 
-        <div className="row position-relative mt-2">
+        <div className="row position-relative mt-5">
           {columns.map((column) => (
-            <div className="col-md-4" key={column.id}>
+            <div className="col-md-4 mt-5" key={column.id}>
               <div
                 className={`rounded ${style.column} mb-2 bg-black shadow-lg`}
               >
@@ -133,6 +138,7 @@ const KanbanBoard = () => {
                 >
                   {column.title}
                 </h6>
+
                 <div className={`${style.cCard}`}>
                   {filteredTasks
                     .filter((task) => task.state === column.id)
@@ -143,25 +149,31 @@ const KanbanBoard = () => {
                         key={task.id}
                       >
                         <div className="card-body position-relative">
-                          <h5 className="card-title">{task.title}</h5>
-                          <p className="card-text">{task.description}</p>
-                          <p className="card-text">
-                            <small>Priority: {task.priority}</small>
-                          </p>
-                          <div className="d-flex justify-content-between gap-2">
-                            <button
-                              title="details"
-                              className="btn btn-outline-info btn-sm"
-                              onClick={() => setTaskDetails(task)}
+                          <div onClick={() => setTaskDetails(task)}>
+                            <h5 className="card-title">{task.title}</h5>
+                            <p
+                              className="card-text"
+                              style={{
+                                textWrap: "nowrap",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "",
+                              }}
                             >
-                              <i class="fa-solid fa-eye"></i>
-                            </button>
+                              {task.description}
+                            </p>
+                            <p className="card-text">
+                              <small>Priority: {task.priority}</small>
+                            </p>
+                          </div>
+
+                          <div className=" d-flex justify-content-between gap-2">
                             <button
                               title="edit"
                               className="btn btn-outline-warning btn-sm"
                               onClick={() => {
-                                setSelectedTask(task);
+                                setToggleButton(!toggleButton);
                                 setAddFormVisibility(true);
+                                setSelectedTask(task);
                               }}
                             >
                               <i class="fa-solid fa-pen-to-square"></i>
@@ -199,7 +211,8 @@ const KanbanBoard = () => {
                 <button
                   onClick={() => {
                     setSelectedTask(null);
-                    toggleFormVisibility();
+                    setAddFormVisibility(true);
+                    setToggleButton(!toggleButton);
                   }}
                   className={`${style.addTask} btn btn-dark rounded w-100 text-light position-relative`}
                 >
@@ -221,7 +234,7 @@ const KanbanBoard = () => {
           {taskDetails && (
             <>
               <h5 className="modal-title">{taskDetails.title}</h5>
-              <p>
+              <p style={{ overflow: "scroll" }}>
                 <strong>Description:</strong> {taskDetails.description}
               </p>
               <p>

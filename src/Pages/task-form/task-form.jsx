@@ -6,7 +6,7 @@ import { addTask, editTask } from "../../Redux/taskSlice";
 import { taskSchema } from "../../Validators/validationSchema";
 import { useEffect, useState } from "react";
 
-const TaskForm = ({ formVisibility, existingTask }) => {
+const TaskForm = ({ toggleButton, formVisibility, existingTask }) => {
   const dispatch = useDispatch();
   const [addFormVisibility, setAddFormVisibility] = useState(false);
 
@@ -55,7 +55,7 @@ const TaskForm = ({ formVisibility, existingTask }) => {
           : {}
       );
     }
-  }, [formVisibility, existingTask, reset]);
+  }, [toggleButton, formVisibility, existingTask, reset]);
 
   return (
     <>
@@ -69,8 +69,8 @@ const TaskForm = ({ formVisibility, existingTask }) => {
           >
             <div
               onClick={() => {
-                reset({});
                 setAddFormVisibility(false);
+                reset({});
               }}
               className="btn btn-danger btn-sm"
             >
