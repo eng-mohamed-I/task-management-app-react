@@ -1,3 +1,9 @@
+.navBar {
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.451);
+  backdrop-filter: blur(5px);
+}
+
 .addtask {
   z-index: 10000;
   opacity: 100%;
@@ -34,6 +40,10 @@
 
 .modal {
   animation: showModel 0.4s ease;
+}
+
+.main {
+  min-height: 100vh;
 }
 
 @media (max-width: 980px) {
