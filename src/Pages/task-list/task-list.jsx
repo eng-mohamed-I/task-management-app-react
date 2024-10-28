@@ -6,7 +6,6 @@ import style from "./task-list.module.css";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
-import { FaPlus } from "react-icons/fa";
 
 const KanbanBoard = () => {
   const tasks = useSelector((state) => state.tasks.tasks);
@@ -16,14 +15,11 @@ const KanbanBoard = () => {
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskDetails, setTaskDetails] = useState(null);
+  const [toggleButton, setToggleButton] = useState(false);
   const toast = useRef(null);
 
   const handleStateChange = (taskId, newState) => {
     dispatch(editState({ id: taskId, updatedState: newState }));
-  };
-
-  const toggleFormVisibility = () => {
-    setAddFormVisibility(!addFormVisibility);
   };
 
   const confirmDeleteTask = (id) => {
@@ -88,6 +84,7 @@ const KanbanBoard = () => {
             className={`d-block position-absolute col-lg-6 col-md-12 col-sm-12 ${style.addtask}`}
           >
             <TaskForm
+              toggleButton={toggleButton}
               existingTask={selectedTask}
               formVisibility={addFormVisibility}
             />
@@ -133,6 +130,7 @@ const KanbanBoard = () => {
                 >
                   {column.title}
                 </h6>
+
                 <div className={`${style.cCard}`}>
                   {filteredTasks
                     .filter((task) => task.state === column.id)
@@ -160,8 +158,9 @@ const KanbanBoard = () => {
                               title="edit"
                               className="btn btn-outline-warning btn-sm"
                               onClick={() => {
-                                setSelectedTask(task);
+                                setToggleButton(!toggleButton);
                                 setAddFormVisibility(true);
+                                setSelectedTask(task);
                               }}
                             >
                               <i class="fa-solid fa-pen-to-square"></i>
@@ -199,7 +198,8 @@ const KanbanBoard = () => {
                 <button
                   onClick={() => {
                     setSelectedTask(null);
-                    toggleFormVisibility();
+                    setAddFormVisibility(true);
+                    setToggleButton(!toggleButton);
                   }}
                   className={`${style.addTask} btn btn-dark rounded w-100 text-light position-relative`}
                 >
